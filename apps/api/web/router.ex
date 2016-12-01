@@ -7,5 +7,9 @@ defmodule Api.Router do
 
   scope "/api", Api do
     pipe_through :api
+
+    scope "/v1" do
+      post "/register", RegistrationController, :create
+    end
   end
 end
