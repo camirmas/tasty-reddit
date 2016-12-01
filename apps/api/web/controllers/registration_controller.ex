@@ -1,20 +1,32 @@
 defmodule Api.RegistrationController do
   use Api.Web, :controller
   alias Api.{User, Digest}
+  alias Ecto.Multi
 
   def create(conn, %{"email" => email, "interval" => interval, "subs" => subs}) do
-    user_changeset = User.changeset(%User{email: email})
-    digest_changeset = Digest.changeset(%Digest{interval: interval, subs: subs})
+    user = %User{email: email}
+    digest = %{interval: interval, subs: subs}
 
-    case Repo.insert(digest_changeset) do
-      {:ok, digest} ->
+    case Repo.transaction(create_user_and_digest(user, digest)) do
+      {:ok, _} ->
         conn
         |> put_status(:created)
         |> send_resp(201, "")
-      {:error, changeset} ->
+      {:error, _failed_operation, _failed_value, changes_so_far} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Api.RegistrationView, "error.json", changeset: changeset)
+        |> render(Api.RegistrationView, "error.json", changeset: changes_so_far)
     end
+  end
+
+  defp create_user_and_digest(user, digest) do
+    Multi.new
+    |> Multi.insert(:user, User.changeset(user))
+    |> Multi.run(:digest, fn %{user: user} ->
+      user
+      |> build_assoc(:digests)
+      |> Digest.changeset(digest)
+      |> Repo.insert
+    end)
   end
 end

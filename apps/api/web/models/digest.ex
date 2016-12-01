@@ -16,5 +16,6 @@ defmodule Api.Digest do
     struct
     |> cast(params, [:interval])
     |> validate_required([:interval])
+    |> cast_assoc(:user)
   end
 end
