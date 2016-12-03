@@ -19,6 +19,15 @@ defmodule Api.RegistrationController do
     end
   end
 
+  def delete(conn, %{"user_id" => user_id}) do
+    if user = Repo.get(User, user_id) do
+      Repo.delete!(user)
+    end
+
+    conn
+    |> send_resp(204, "")
+  end
+
   defp create_user_and_digest(user, digest) do
     Multi.new
     |> Multi.insert(:user, User.changeset(user))

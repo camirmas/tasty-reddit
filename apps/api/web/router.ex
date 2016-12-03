@@ -10,6 +10,7 @@ defmodule Api.Router do
 
     scope "/v1" do
       post "/register", RegistrationController, :create
+      delete "/unsubscribe", RegistrationController, :delete
     end
   end
 end

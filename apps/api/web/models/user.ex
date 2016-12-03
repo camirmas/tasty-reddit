@@ -3,7 +3,7 @@ defmodule Api.User do
 
   schema "users" do
     field :email, :string
-    has_many :digests, Api.Digest
+    has_many :digests, Api.Digest, on_delete: :delete_all
 
     timestamps()
   end
