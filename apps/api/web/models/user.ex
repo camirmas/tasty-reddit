@@ -18,5 +18,6 @@ defmodule Api.User do
     |> cast(params, [:email])
     |> validate_required([:email])
     |> unique_constraint(:email)
+    |> cast_assoc(:digests)
   end
 end

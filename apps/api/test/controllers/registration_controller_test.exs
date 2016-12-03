@@ -1,6 +1,8 @@
 defmodule Api.RegistrationControllerTest do
   use Api.ConnCase
 
+  alias Api.User
+
   @params %{
     "email" => "dude@dude.dude",
     "interval" => 4000,
@@ -17,6 +19,16 @@ defmodule Api.RegistrationControllerTest do
     assert length(user.digests) > 0
   end
 
+  test "invalid digest data in POST /register does not create a user",
+    %{conn: conn} do
+      params = %{@params | "interval" => nil}
+      conn = post conn, "/api/v1/register", params
+      users = Repo.all(User)
+
+      assert response(conn, 422)
+      assert length(users) == 0
+  end
+
   test "DELETE /unsubscribe deletes a user and all subscriptions", %{conn: conn} do
     conn = post conn, "/api/v1/register", @params
     %{digests: [digest]} = user = get_user
@@ -29,7 +41,7 @@ defmodule Api.RegistrationControllerTest do
   end
 
   defp get_user do
-    user_q = from user in Api.User,
+    user_q = from user in User,
       where: user.email == ^@params["email"],
       preload: [:digests]
 

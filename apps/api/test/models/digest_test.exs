@@ -3,7 +3,10 @@ defmodule Api.DigestTest do
 
   alias Api.Digest
 
-  @valid_attrs %{interval: 42}
+  @valid_attrs %{interval: 42,
+    user: %{email: "dude@dude.dude"},
+    subs: ["r/aww"]
+  }
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

@@ -3,9 +3,9 @@ defmodule Api.Repo.Migrations.CreateDigest do
 
   def change do
     create table(:digests) do
-      add :interval, :integer
-      add :subs, {:array, :string}
-      add :user_id, references(:users, type: :uuid, on_delete: :delete_all)
+      add :interval, :integer, null: false
+      add :subs, {:array, :string}, null: false
+      add :user_id, references(:users, type: :uuid, on_delete: :delete_all), null: false
 
       timestamps()
     end
