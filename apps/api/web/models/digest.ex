@@ -4,7 +4,7 @@ defmodule Api.Digest do
   schema "digests" do
     field :interval, :integer
     field :subs, {:array, :string}
-    belongs_to :user, Api.User
+    belongs_to :user, Api.User, type: :binary_id
 
     timestamps()
   end
