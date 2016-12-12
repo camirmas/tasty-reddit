@@ -8,4 +8,22 @@ defmodule Digest do
 
     Digest.Supervisor.start_link
   end
+
+  defstruct [
+    :name,
+    :email,
+    :interval
+  ]
+
+  def add_digest(%Digest{} = digest) do
+    Digest.Server.add_digest(digest)
+  end
+
+  def get_digests(email) do
+    Digest.Server.get_digests(email)
+  end
+
+  def clear_digests do
+    Digest.Server.clear_digests
+  end
 end

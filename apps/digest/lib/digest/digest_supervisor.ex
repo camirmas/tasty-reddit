@@ -7,7 +7,8 @@ defmodule Digest.DigestSupervisor do
   end
 
   def init(_) do
-    children = [worker(Digest.DigestWorker, [])]
+    opts = [restart: :temporary]
+    children = [worker(Digest.DigestWorker, [], opts)]
     supervise children, strategy: :simple_one_for_one
   end
 end
