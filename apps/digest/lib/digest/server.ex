@@ -31,12 +31,12 @@ defmodule Digest.Server do
     case Supervisor.start_child(DigestSupervisor, [digest]) do
       {:ok, pid} ->
         ref = Process.monitor(pid)
-        :ets.insert(digests, {ref, pid, digest.email})
+        insert_digest(ref, pid, digest, digests)
 
         {:reply, {:ok, pid}, state}
 
-      {:error, error} = err ->
-        {:reply, err, state}
+      {:error, _} = error ->
+        {:reply, error, state}
     end
   end
 
@@ -49,23 +49,33 @@ defmodule Digest.Server do
   def handle_call(:clear_digests, _from, %{digests: digests} = state) do
     digests
     |> :ets.tab2list
-    |> Enum.each(fn {_ref, pid, _email} -> Process.exit(pid, :shutdown) end)
+    |> Enum.each(fn {_ref, pid, _email, _digest} -> Process.exit(pid, :shutdown) end)
 
     :ets.delete_all_objects(digests)
 
     {:reply, :ok, state}
   end
 
-  def handle_info(msg) do
-    # TODO: Need to handle unexpected shutdowns
-    IO.inspect msg
+  def handle_info({:DOWN, ref, _, pid, :killed}, %{digests: digests} = state) do
+    Process.demonitor(ref)
+    [{^ref, ^pid, _email, digest}] = :ets.lookup(digests, ref)
+
+    {:ok, pid} = Supervisor.start_child(DigestSupervisor, [digest])
+    ref = Process.monitor(pid)
+    insert_digest(ref, pid, digest, digests, replace: true)
+
+    {:noreply, state}
+  end
+
+  def handle_info({:DOWN, _, _, _, :shutdown}, state) do
+    {:noreply, state}
   end
 
   # Private
-  def retrieve_digests(email, digests) do
+  defp retrieve_digests(email, digests) do
     # retrieves all digests by user email
     digests
-    |> :ets.match({:"_", :"$1", email})
+    |> :ets.match({:"_", :"$1", email, :"_"})
     |> Enum.map(&(get_digest_info(&1)))
   end
 
@@ -73,4 +83,11 @@ defmodule Digest.Server do
     DigestWorker.get_info(pid)
   end
 
+  defp insert_digest(ref, pid, digest, digests, replace: true) do
+    :ets.delete(digests, ref)
+    insert_digest(ref, pid, digest, digests)
+  end
+  defp insert_digest(ref, pid, digest, digests) do
+    :ets.insert(digests, {ref, pid, digest.email, digest})
+  end
 end
