@@ -31,4 +31,5 @@ use Mix.Config
 
 config :digest, :source, Grapple
 
-config :digest, :service, Digest.Reddit
+# TODO: remove in favor of dynamically determining via Digest instances
+config :digest, :service, Digest.Services.Reddit

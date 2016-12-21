@@ -38,6 +38,7 @@ defmodule Digest.Mixfile do
   defp deps do
     [
       {:grapple, "~> 1.2.0"},
+      {:poison, "~> 2.0"},
     ]
   end
 end

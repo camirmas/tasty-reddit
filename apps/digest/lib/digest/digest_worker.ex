@@ -2,6 +2,7 @@ defmodule Digest.DigestWorker do
   use GenServer
 
   @source Application.get_env(:digest, :source)
+  # TODO: put service in Digest table
   @service Application.get_env(:digest, :service)
 
   # API
@@ -40,10 +41,9 @@ defmodule Digest.DigestWorker do
   end
 
   def handle_cast(:digest, %{digest: digest} = state) do
-    #@source.get_responses(digest.name)
-    #|> @digester.dedupe
-    #|> create_digest
-    #|> send_email
+    @source.get_responses(digest.id)
+    |> @service.process
+    #|> Email.send_email
 
     {:noreply, state}
   end

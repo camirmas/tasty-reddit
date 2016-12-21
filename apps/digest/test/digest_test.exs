@@ -2,7 +2,7 @@ defmodule DigestTest do
   use ExUnit.Case
   #doctest Digest
 
-  @digest %Digest{email: "dude@dude.dude", interval: 2000, name: "brogramming"}
+  @digest %Digest{email: "dude@dude.dude", interval: 2000, id: "123"}
 
   setup do
     Digest.clear_digests

@@ -10,7 +10,7 @@ defmodule Digest do
   end
 
   defstruct [
-    :name,
+    :id,
     :email,
     :interval
   ]
