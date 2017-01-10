@@ -1,7 +1,7 @@
 defmodule Digest.Services.Reddit do
   @behaviour Digest.Services.Digester
 
-  alias Digest.Services.Digester.Envelope
+  alias Digest.Services.Digester.Summary
 
   @doc """
   Function responsible for processing the data coming back from the
@@ -38,13 +38,23 @@ defmodule Digest.Services.Reddit do
   Filters the data by any given parameters.
   """
   def filter(data, opts) do
-
+    data
   end
 
   @doc """
   Creates readable summaries of the given data.
   """
   def digest(data, opts) do
+    Enum.map(data, fn item ->
+      item
+      |> Kernel.get_in(["data"])
+      |> Map.take(["title", "url", "subreddit"])
+      |> create_summary_struct
+    end)
+  end
 
+  defp create_summary_struct(map) do
+    map = for {key, val} <- map, into: %{}, do: {String.to_atom(key), val}
+    struct(Summary, map)
   end
 end

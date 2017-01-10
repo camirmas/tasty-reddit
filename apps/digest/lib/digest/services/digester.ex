@@ -1,12 +1,11 @@
 defmodule Digest.Services.Digester do
-  @callback process(list(map), keyword) :: list(map)
+  @callback process(list(map), keyword) :: list(Summary.t)
 
-  defmodule Envelope do
+  defmodule Summary do
     defstruct [
       :title,
-      :link,
-      :summary,
-      :sub,
+      :url,
+      :subreddit,
     ]
   end
 end

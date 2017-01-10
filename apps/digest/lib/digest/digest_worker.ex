@@ -37,7 +37,7 @@ defmodule Digest.DigestWorker do
   end
 
   def handle_call(:get_info, _from, %{digest: digest} = state) do
-    {:reply, {self, digest}, state}
+    {:reply, {self(), digest}, state}
   end
 
   def handle_cast(:digest, %{digest: digest} = state) do
@@ -55,7 +55,7 @@ defmodule Digest.DigestWorker do
     :timer.apply_interval(interval,
                           __MODULE__,
                           :digest,
-                          [self])
+                          [self()])
   end
 
   defp stop_timer(tref) when is_nil(tref) do

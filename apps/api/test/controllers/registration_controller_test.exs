@@ -14,7 +14,7 @@ defmodule Api.RegistrationControllerTest do
 
     assert response(conn, 201) =~ ""
 
-    user = get_user
+    user = get_user()
 
     assert length(user.digests) > 0
   end
@@ -31,7 +31,7 @@ defmodule Api.RegistrationControllerTest do
 
   test "DELETE /unsubscribe deletes a user and all subscriptions", %{conn: conn} do
     conn = post conn, "/api/v1/register", @params
-    %{digests: [digest]} = user = get_user
+    %{digests: [digest]} = user = get_user()
     conn = delete conn, "/api/v1/unsubscribe", %{"user_id" => user.id}
 
     assert response(conn, 204) =~ ""

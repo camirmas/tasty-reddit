@@ -2,6 +2,7 @@ defmodule Services.RedditTest do
   use ExUnit.Case
 
   alias Digest.Services.Reddit
+  alias Digest.Services.Digester.Summary
 
   @response Services.Fixtures.get_responses
 
@@ -25,10 +26,13 @@ defmodule Services.RedditTest do
   end
 
   test "filter/2 should filter results by certain parameters" do
-
+    assert 1 > 0
   end
 
   test "digest/2 should create summaries of the given data" do
-    
+    resp = Reddit.process(@response)
+
+    assert Enum.all?(resp, fn item -> %Summary{} = item end)
+    assert Enum.all?(resp, fn item -> item.subreddit == "elixir" end)
   end
 end
