@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>
+        Here's your digest!
+      </h1>
+      <%= for item <- digest do %>
+        <div>
+          <h2>
+            <a href="<%= item.url %>">
+              <%= item.title %>
+            </a>
+          </h2>
+          <p>
+            <%= item.subreddit %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </body>
+</html>

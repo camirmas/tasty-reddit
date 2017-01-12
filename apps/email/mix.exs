@@ -1,8 +1,8 @@
-defmodule Digest.Mixfile do
+defmodule Email.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :digest,
+    [app: :email,
      version: "0.1.0",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
@@ -11,15 +11,14 @@ defmodule Digest.Mixfile do
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps()]
+     deps: deps]
   end
 
   # Configuration for the OTP application
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :grapple, :email],
-     mod: {Digest, []}]
+    [applications: [:logger, :swoosh, :gen_smtp]]
   end
 
   # Dependencies can be Hex packages:
@@ -37,9 +36,8 @@ defmodule Digest.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:grapple, "~> 1.2.0"},
-      {:poison, "~> 2.0"},
-      {:email, in_umbrella: true},
+      {:swoosh, "~> 0.5.0"},
+      {:gen_smtp, "~> 0.11.0"},
     ]
   end
 end
