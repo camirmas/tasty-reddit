@@ -18,7 +18,7 @@ defmodule Email.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :swoosh, :gen_smtp]]
+    [applications: [:logger, :bamboo]]
   end
 
   # Dependencies can be Hex packages:
@@ -36,8 +36,7 @@ defmodule Email.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:swoosh, "~> 0.5.0"},
-      {:gen_smtp, "~> 0.11.0"},
+      {:bamboo, "~> 0.8"},
     ]
   end
 end
