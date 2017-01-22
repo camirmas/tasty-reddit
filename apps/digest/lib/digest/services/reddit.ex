@@ -3,6 +3,10 @@ defmodule Digest.Services.Reddit do
 
   alias Digest.Services.Digester.Summary
 
+  def to_url(sub) do
+    "https://www.reddit.com/#{sub}/top/.json?limit=1"
+  end
+
   @doc """
   Function responsible for processing the data coming back from the
   designated source. The returned data is fully digested and ready
@@ -17,12 +21,20 @@ defmodule Digest.Services.Reddit do
   end
 
   @doc """
-  Parses the data and returns it as a Map.
+  Parses the data and returns it as a list of maps.
   """
   def parse(data) do
-    data
-    |> Poison.Parser.parse!
-    |> Kernel.get_in(["data", "children"])
+    posts = Enum.map(data, fn item ->
+      case item do
+        {:ok, %{body: body}} ->
+          body
+          |> Poison.Parser.parse!
+          |> Kernel.get_in(["data", "children"])
+        _ ->
+          []
+      end
+    end)
+    List.flatten(posts)
   end
 
   @doc """

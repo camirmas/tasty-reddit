@@ -4,10 +4,10 @@ defmodule Services.RedditTest do
   alias Digest.Services.Reddit
   alias Digest.Services.Digester.Summary
 
-  @response Services.Fixtures.get_responses
+  @responses Services.Fixtures.get_responses
 
   test "parse/1 should convert a response to an Elixir list of maps" do
-    resp = Reddit.parse(@response)
+    resp = Reddit.parse(@responses)
 
     assert is_list(resp)
     assert length(resp) == 2
@@ -15,8 +15,8 @@ defmodule Services.RedditTest do
   end
 
   test "dedupe/1 should remove duplicates by id" do
-    resp1 = Reddit.parse(@response)
-    resp2 = Reddit.parse(@response)
+    resp1 = Reddit.parse(@responses)
+    resp2 = Reddit.parse(@responses)
     resp = resp1 ++ resp2
 
     deduped = Reddit.dedupe(resp)
@@ -30,7 +30,7 @@ defmodule Services.RedditTest do
   end
 
   test "digest/2 should create summaries of the given data" do
-    resp = Reddit.process(@response)
+    resp = Reddit.process(@responses)
 
     assert Enum.all?(resp, fn item -> %Summary{} = item end)
     assert Enum.all?(resp, fn item -> item.subreddit == "elixir" end)

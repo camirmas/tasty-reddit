@@ -1,6 +1,7 @@
 defmodule Api.Digest do
   use Api.Web, :model
 
+  @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
 
   schema "digests" do
