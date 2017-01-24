@@ -47,12 +47,20 @@ defmodule Api do
       digest.id
       |> String.to_atom
       |> Grapple.add_topic
-    # TODO: make interval an app-level config
-    #hook = %Grapple.Hook{url: digest.url, interval: 1000 * 60 * 60 * 24}
+
     Enum.each(digest.subs, fn sub ->
       url = Digest.Services.Reddit.to_url(sub)
-      hook = %Grapple.Hook{url: url, interval: 60000}
-      {:ok, pid} = Grapple.subscribe(topic.name, hook)
+      # TODO: make hook interval an app-level config
+      #hook = %Grapple.Hook{url: digest.url, interval: 1000 * 60 * 60 * 24}
+      hook = %Grapple.Hook{url: url, interval: 6000}
+      digest = %Digest{
+        id: digest.id,
+        email: digest.user.email,
+        interval: digest.interval
+      }
+
+      Grapple.subscribe(topic.name, hook)
+      Digest.add_digest(digest)
     end)
   end
 end

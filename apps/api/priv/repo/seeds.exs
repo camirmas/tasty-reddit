@@ -14,7 +14,7 @@ alias Api.{User, Repo}
 
 digest = %{
   subs: ["r/elixir"],
-  interval: 1000 * 60 * 60 * 24 * 7
+  interval: 1000 * 60
 }
 
 user = %{

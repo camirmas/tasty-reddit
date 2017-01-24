@@ -2,10 +2,10 @@ defmodule Email do
   import Bamboo.Email
   alias Email.Mailer
 
-  def send_email(user, digest) do
+  def send_email(digest, email) do
     digest
     |> generate_template
-    |> generate_email(user)
+    |> generate_email(email)
     |> Mailer.deliver_now
   end
 
@@ -13,9 +13,9 @@ defmodule Email do
     EEx.eval_file("#{__DIR__}/email/templates/digest.html.eex", digest: digest)
   end
 
-  def generate_email(template, user) do
+  def generate_email(template, email) do
     new_email(
-      to: user.email,
+      to: email,
       from: "noreply@tastyreads.com",
       subject: "Your TastyReads Digest",
       html_body: template,

@@ -41,9 +41,14 @@ defmodule Digest.DigestWorker do
   end
 
   def handle_cast(:digest, %{digest: digest} = state) do
-    @source.get_responses(digest.id)
+    responses =
+      digest.id
+      |> String.to_atom
+      |> @source.get_responses
+      |> flatten_responses
+
     |> @service.process
-    #|> Email.send_email
+    |> Email.send_email(digest.email)
 
     {:noreply, state}
   end
@@ -66,5 +71,11 @@ defmodule Digest.DigestWorker do
   defp stop_timer(tref) do
     # Stops the :timer with the given ref
     :timer.cancel(tref)
+  end
+
+  defp flatten_responses(responses) do
+    Enum.reduce(responses, [], fn({_pid, resp}, acc) ->
+      acc ++ resp
+    end)
   end
 end

@@ -3,7 +3,7 @@ defmodule EmailTest do
   use Bamboo.Test
 
   @digest [%{url: "url", title: "title", subreddit: "subreddit"}]
-  @user %{email: "vader@deathstar.net"}
+  @email "vader@deathstar.net"
 
   test "generate_template/2 generates the email template" do
     assert Email.generate_template(@digest)
@@ -12,10 +12,10 @@ defmodule EmailTest do
   test "generate_email/2 creates a Swoosh.Email" do
     template = Email.generate_template(@digest)
 
-    assert %Bamboo.Email{} = Email.generate_email(template, @user)
+    assert %Bamboo.Email{} = Email.generate_email(template, @email)
   end
 
   test "send_email/2 sends an email" do
-    assert_delivered_email(Email.send_email(@user, @digest))
+    assert_delivered_email(Email.send_email(@digest, @email))
   end
 end
